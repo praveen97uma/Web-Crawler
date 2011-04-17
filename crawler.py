@@ -8,6 +8,7 @@ from time import ctime
 from downloader import Downloader
 from os.path import splitext
 import logging
+import linkanalyser
 class Crawler(object):
     """crawler goes out to the web and downloads the web pages
     """
@@ -17,14 +18,16 @@ class Crawler(object):
         self.links_queue = deque([])
         self.domain = ''
         self.same_domain = True
+        self.pageRetriever = Retriever()
+        self.downloader = Downloader()
+        self.linkanalyser = linkanalyser.LinkAnalyzer()
         logging.basicConfig(filename = 'crawler.log', format = '%(levelname)s:%(message)s', level = logging.INFO)
 
          
             
     def crawlPage(self, url, same_domain = True):
-        pageRetriever = Retriever()
-        downloader = Downloader()
-        retrieverResponse = downloader.CDownload(url)
+        
+        retrieverResponse = self.downloader.CDownload(url)
         
         if retrieverResponse == 0:
             print retrieverResponse, "Invalid Url.....parsing skipped\n"
@@ -33,34 +36,34 @@ class Crawler(object):
         self.visited_links.append(url)
         
         try:
-            links = pageRetriever.getLinks(url)
-        except Exception:
-            return
+            links = self.pageRetriever.getLinks(url)
+            self.linkanalyser.analyze(url,links)
+        except Exception: return
    
         
         for link in links:
             if link not in self.visited_links:
                 if same_domain == True:
                     if urlparse(link)[1] != self.domain:
-                        print link, " *** discarded for crawl .. not in domain"
+                        #print link, " *** discarded for crawl .. not in domain"
                         logging.info("%s * discarded for crawl .. not in domain"%link)
                     else:
                         if link not in self.links_queue:
                             if splitext(link)[1] not in self._invalidExt:
                                 self.links_queue.append(link)
-                                print link, " *** new link added to crawl queue"
+                                #print link, " *** new link added to crawl queue"
                                 logging.info("%s * new link added to crawl queue"%link)
                         else:
-                            print link,"*** discarded already visited"
+                            #print link,"*** discarded already visited"
                             logging.info("%s * discarded already visited"%link)
                     
                 if same_domain == False:
                     if link not in self.links_queue:
                             self.links_queue.append(link)
-                            print link," *** new link added to crawl queue"
+                            #print link," *** new link added to crawl queue"
                             logging.info("%s * new link added to crawl queue"%link)
                     else:
-                        print link,"*** discarded already visited"
+                        #print link,"*** discarded already visited"
                         logging.info("%s *** discarded already visited"%link)
                       
         print "length of queue is ", len(self.links_queue), "len of visited queue is ",\
