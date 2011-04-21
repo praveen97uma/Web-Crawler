@@ -2,15 +2,16 @@ from shelve import DbfilenameShelf as shelve
 from Models.document import Document
 from hashlib import md5
 import logging
+import parser
+from retriever import Retriever
 class LinkAnalyzer(object):
    """creates abstract documents and feeds their attributes
    """
    
    def __init__(self):
       shelve('database1','c')
-      
-      
-      
+      self.term_extractor = parser.ExtractTerms()
+      self.retriever = Retriever()      
    def analyze(self, url, links):
       """creates a document and sets its outgoing links
       """
@@ -19,14 +20,26 @@ class LinkAnalyzer(object):
       #if the document is already in the database, just add its outgoing links
       
       if key in self.db.iterkeys():
-         doc=self.db[key]
+         doc = self.db[key]
          doc.insertOL(links)
+         doc.url = url
+         document = open(self.retriever.filename(url)).read()
+         doc.all_terms = self.term_extractor.get_terms(document)
+         doc.unique_terms_freq = self.term_extractor.count_term_frequencies(
+            doc.unique_terms_freq.keys(), document
+         )
          #print self.db[key].outgoingLinks
       #if there is no document for the url, create a document and add its outgoing links
       if key not in self.db.iterkeys():
          newDoc = Document(url)
          newDoc.insertOL(links)
-         self.db[key]=newDoc
+         newDoc.url = url
+         document = open(self.retriever.filename(url)).read()
+         newDoc.all_terms = self.term_extractor.get_terms(document)
+         newDoc.unique_terms_freq = self.term_extractor.count_term_frequencies(
+            newDoc.unique_terms_freq.keys(), document
+         )
+         self.db[key] = newDoc
          #print self.db[key].outgoingLinks
       #self.extractLinksfromResponse(url,links)       
       self.db.close()
