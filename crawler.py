@@ -12,7 +12,10 @@ import linkanalyser
 class Crawler(object):
     """crawler goes out to the web and downloads the web pages
     """
-    _invalidExt = ['.pdf','jpg','jpeg','.doc','docx','.gif','.zip','.rar','.PDF']
+    _invalidExt = [
+        '.pdf', 'jpg', 'jpeg', '.doc', 'docx', 
+        '.gif', '.zip', '.rar', '.PDF'
+    ]
     def __init__(self):
         self.visited_links = []
         self.links_queue = deque([])
@@ -21,7 +24,11 @@ class Crawler(object):
         self.pageRetriever = Retriever()
         self.downloader = Downloader()
         self.linkanalyser = linkanalyser.LinkAnalyzer()
-        logging.basicConfig(filename = 'crawler.log', format = '%(levelname)s:%(message)s', level = logging.INFO)
+        logging.basicConfig(
+            filename = 'crawler.log', 
+            format = '%(levelname)s:%(message)s', 
+            level = logging.INFO
+        )
 
          
             
@@ -37,9 +44,9 @@ class Crawler(object):
         
         try:
             links = self.pageRetriever.getLinks(url)
-            self.linkanalyser.analyze(url,links)
-        except Exception: return
-   
+            self.linkanalyser.analyze(url, links)
+        except Exception:
+            return
         
         for link in links:
             if link not in self.visited_links:
@@ -59,17 +66,17 @@ class Crawler(object):
                     
                 if same_domain == False:
                     if link not in self.links_queue:
-                            self.links_queue.append(link)
-                            #print link," *** new link added to crawl queue"
-                            logging.info("%s * new link added to crawl queue"%link)
+                        self.links_queue.append(link)
+                        #print link," *** new link added to crawl queue"
+                        logging.info("%s * new link added to crawl queue"%link)
                     else:
                         #print link,"*** discarded already visited"
                         logging.info("%s *** discarded already visited"%link)
                       
-        print "length of queue is ", len(self.links_queue), "len of visited queue is ",\
+        print "length of queue is ", len(self.links_queue), "len of visited queue is ", \
             len(self.visited_links)
         logging.info("length of queue is %d   length of visited queue is %d"\
-            %(len(self.links_queue),len(self.visited_links)))            
+            %(len(self.links_queue), len(self.visited_links)))            
                     
                     
     def start_crawl(self, url, same_domain = True):
@@ -92,7 +99,8 @@ def main():
         except (KeyboardInterrupt, EOFError):
             url = ''
 
-    if not url: return
+    if not url: 
+        return
     robot = Crawler()
     robot.start_crawl(url)
 
