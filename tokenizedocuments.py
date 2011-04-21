@@ -101,11 +101,32 @@ class TokenizeDocuments(object):
         for term in remove_terms:
             dict_of_terms.__delitem__(term)
         return dict_of_terms
+        
+    def assign_id_to_terms(self, list_of_terms):
+        """
+        Assign an integer id to all the terms for mathematical manipulation.
+        We save the dictionary of integers mapped to the terms in a database 
+        for future reference.
+        id2term stands for mapping of integer to a term.
+        term2id stands for term mapped to an integer.
+        """
+        terms_to_int = dict(enumerate(list_of_terms))
+        shelve('temp/terms_integerid','c')
+        temp_file = shelve('temp/terms_integerid','w')
+        temp_file['id2term'] = terms_to_int
+            
+        return int_ids
+         
 
-if '__name__' == '__main__':
-    t = TokenizeDocuments('database1')
-    terms = t.get_all_terms()
-    freq = t.terms_counter(terms)
-    #print len(list(freq))
 
-    print len(t.filter_terms(freq, [1, 2]))          
+t = TokenizeDocuments('database1')
+terms = t.get_all_terms()
+freq = t.terms_counter(terms)
+#print len(list(freq))
+
+(t.filter_terms(freq, [1]))
+
+list_of_terms = [key for key in freq.iterkeys()]
+
+ids = t.assign_id_to_terms(list_of_terms)
+print ids          
