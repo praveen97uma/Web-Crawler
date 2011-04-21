@@ -1,7 +1,11 @@
 #!usr/bin/python
 from hashlib import md5 
 class Document(object):
-    """Document abstract class
+    """
+    Document abstract class.
+    all_terms stores all the words in the document.
+    unique_terms_freq stores the frequencies of each unique term in the
+    document.
     """
     def __init__(self,url):
         self.key = md5(url).hexdigest()
