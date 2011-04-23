@@ -30,25 +30,28 @@ class TokenizeDocuments(object):
         self.retriever = Retriever()
         self.term_extractor = parser.ExtractTerms()
 
+    """This code does not work
     def set_tokens(self):
-        """
-        Iterate through all the documents and sets its all_terms and unique_terms
-        attributes
-        """
+        
+        #Iterate through all the documents and sets its all_terms and unique_terms
+        #attributes
+        
         self.database = shelve(self.db, 'w')
         for key in self.database.iterkeys():
             abstract_doc = self.database[key]
             url = abstract_doc.url
             document = open(self.retriever.filename(url)).read()
-            abstract_doc.unique_terms = self.term_extractor.get_unique_terms(document)
+            abstract_doc.all_terms = self.term_extractor.get_terms(document)
             #print abstract_doc.unique_terms
-            abstract_doc.all_terms = self.term_extractor.count_term_frequencies(
-                abstract_doc.unique_terms, document
+            abstract_doc.unique_terms_freq = self.term_extractor.count_term_frequencies(
+                set(abstract_doc.all_terms), document
             )
-            #print abstract_doc.all_terms
+            print abstract_doc.unique_terms_freq
         self.database.close()
+        
+        """
           
-    def get_all_terms(self, pod = 0.6):
+    def get_all_terms(self, pod = 1):
         """
         Iterate through the documents and retrieve the list of all the terms in
         the corpus of text. pod is the percentage of documents that we want to 
@@ -114,19 +117,21 @@ class TokenizeDocuments(object):
         shelve('temp/terms_integerid','c')
         temp_file = shelve('temp/terms_integerid','w')
         temp_file['id2term'] = terms_to_int
-            
-        return int_ids
+        temp_file.close()    
+        return terms_to_int
          
 
 
 t = TokenizeDocuments('database1')
+#t.set_tokens()
 terms = t.get_all_terms()
 freq = t.terms_counter(terms)
 #print len(list(freq))
 
-(t.filter_terms(freq, [1]))
+(t.filter_terms(freq, [1,2]))
 
-list_of_terms = [key for key in freq.iterkeys()]
+list_of_terms = freq.keys()
 
 ids = t.assign_id_to_terms(list_of_terms)
-print ids          
+print ids
+#print ids          
