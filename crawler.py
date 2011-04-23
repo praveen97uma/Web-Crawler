@@ -47,7 +47,7 @@ class Crawler(object):
             self.linkanalyser.analyze(url, links)
         except Exception:
             return
-        
+            
         for link in links:
             if link not in self.visited_links:
                 if same_domain == True:
