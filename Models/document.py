@@ -1,5 +1,6 @@
 #!usr/bin/python
-from hashlib import md5 
+from hashlib import md5
+from numpy import zeros 
 class Document(object):
     """
     Document abstract class.
