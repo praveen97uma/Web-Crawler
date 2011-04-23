@@ -206,7 +206,7 @@ class ExtractTerms(object):
             abstForm_terms = method(abstForm_terms)
         #abstForm_terms = set(abstForm_terms)
         #return regexp_terms.union(abstForm_terms)
-        return list(set(abstFormterms))
+        return list(set(abstForm_terms))
       
 if __name__ == '__main__':
 
