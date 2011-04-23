@@ -25,8 +25,9 @@ class LinkAnalyzer(object):
          doc.url = url
          document = open(self.retriever.filename(url)).read()
          doc.all_terms = self.term_extractor.get_terms(document)
+         unique_terms = self.term_extractor.get_unique_terms(document)
          doc.unique_terms_freq = self.term_extractor.count_term_frequencies(
-            doc.unique_terms_freq.keys(), document
+            unique_terms, document
          )
          #print self.db[key].outgoingLinks
       #if there is no document for the url, create a document and add its outgoing links
@@ -36,8 +37,9 @@ class LinkAnalyzer(object):
          newDoc.url = url
          document = open(self.retriever.filename(url)).read()
          newDoc.all_terms = self.term_extractor.get_terms(document)
+         unique_terms = self.term_extractor.get_unique_terms(document)
          newDoc.unique_terms_freq = self.term_extractor.count_term_frequencies(
-            newDoc.unique_terms_freq.keys(), document
+            unique_terms, document
          )
          self.db[key] = newDoc
          #print self.db[key].outgoingLinks
