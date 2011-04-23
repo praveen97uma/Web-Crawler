@@ -98,7 +98,7 @@ class Indexer(object):
                 except StopIteration:
                     flag = False
             doc_freq[kw] = count
-         
+            print kw,count
         doc_freq.close()
     
     def calculate_term_weight(self, term_freq, doc_freq, total_doc):
@@ -167,5 +167,5 @@ class Indexer(object):
             dv[key] = doc_vector
             
 i = Indexer('database1')        
-#i.calculate_document_frequency()
+i.calculate_document_frequency()
 i.set_doc_vector()    
