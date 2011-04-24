@@ -14,12 +14,12 @@ from numpy import zeros
 from Models.document import Document
 from numpy import dot
 
-keyword_database = shelve('temp/terms_to_integer','r')
+keyword_database = shelve('temp/terms_to_integer', 'r')
 keywords = keyword_database['term2id'].keys()
 vec_length = len(keywords)
 porter_stemmer = PorterStemmer()
-dv = shelve('documentVectors','r')
-doc_database = shelve('database1','r')
+dv = shelve('documentVectors', 'r')
+doc_database = shelve('database1', 'r')
 
 def query_parser(query):
     """
@@ -33,7 +33,7 @@ def query_parser(query):
     query_terms = [porter_stemmer.stem(word) for word in query_terms]
     query_terms = [term for term in query_terms if term in keywords]
     query_vec = zeros(vec_length)
-    tfs =dict(Counter(query_terms)) 
+    tfs = dict(Counter(query_terms)) 
     for term in query_terms:
         if term in keywords:
             index = keyword_database['term2id'][term]
@@ -49,7 +49,7 @@ def search_database(query_vec, no_of_res = 10):
     results = []
     for doc_id in dv.iterkeys():
         value = dot(dv[doc_id], query_vec)
-        results.append((doc_id,value)) 
+        results.append((doc_id, value)) 
     results = sorted(results, key=lambda k: k[1], reverse = True)
     count = 0
     for n in xrange(no_of_res):
@@ -58,12 +58,14 @@ def search_database(query_vec, no_of_res = 10):
             print doc_database[results[n][0]].url
     if count == 0:
         print "No results found!!!"
-def search():
-    find = True
 
+def search():
+    """
+    Search Function which runs infinitely to accept user queries.
+    """
+    find = True
     while find:
-        query = raw_input("Search For : ")
-        
+        query = raw_input("Search For : ")    
         search_database(query_parser(query))
         
 search()
