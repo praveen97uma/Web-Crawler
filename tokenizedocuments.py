@@ -8,6 +8,7 @@ from shelve import DbfilenameShelf as shelve
 from retriever import Retriever
 import parser
 from counter import Counter
+
 class TokenizeDocuments(object):
     """ 
     Store the terms or tokens of a document in its abstract representation.
@@ -29,27 +30,6 @@ class TokenizeDocuments(object):
         self.db = database
         self.retriever = Retriever()
         self.term_extractor = parser.ExtractTerms()
-
-    """This code does not work
-    def set_tokens(self):
-        
-        #Iterate through all the documents and sets its all_terms and unique_terms
-        #attributes
-        
-        self.database = shelve(self.db, 'w')
-        for key in self.database.iterkeys():
-            abstract_doc = self.database[key]
-            url = abstract_doc.url
-            document = open(self.retriever.filename(url)).read()
-            abstract_doc.all_terms = self.term_extractor.get_terms(document)
-            #print abstract_doc.unique_terms
-            abstract_doc.unique_terms_freq = self.term_extractor.count_term_frequencies(
-                set(abstract_doc.all_terms), document
-            )
-            print abstract_doc.unique_terms_freq
-        self.database.close()
-        
-        """
           
     def get_all_terms(self, pod = 0.6):
         """
