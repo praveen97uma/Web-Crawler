@@ -1,10 +1,7 @@
 #!usr/bin/python
 from tokenizedocuments import TokenizeDocuments
 from shelve import DbfilenameShelf as shelve
-from math import log
-from numpy import zeros
-from numpy import dot
-from numpy.linalg import norm
+import mathutils
 from numpy import NaN
 #TODO move the mathematical functions to another module
 class Indexer(object):
@@ -101,22 +98,9 @@ class Indexer(object):
             print kw,count
         doc_freq.close()
     
-    def calculate_term_weight(self, term_freq, doc_freq, total_doc):
-        """
-        Calculate the term weight of a token acc to a pre-defined
-        formula.
-        """
-        weight = term_freq * log(total_doc/doc_freq)
-        return weight
     
-    def normalise_vector(self, vector):
-        """
-        Returns the normalized vector which is the vector divided by
-        its magnitude.
-        """
-        if norm(vector) == 0:
-            return vector
-        return vector/norm(vector)
+    
+    
         
     def set_doc_vector(self):
         """
@@ -126,6 +110,8 @@ class Indexer(object):
         documents = True
         doc_freq = shelve('doc_frequencies','w')
         shelve('documentVectors','c')
+        keyword_database = shelve('temp/terms_to_integer','r')
+        keywords = keyword_database['term2id']
         dv = shelve('documentVectors','w')
         db = shelve(self.db, 'w')
         for document in db.itervalues():
@@ -140,32 +126,23 @@ class Indexer(object):
             key = document.key
             #print key
             doc_terms = document.unique_terms_freq
-            #print doc_terms
-            kw_generator = self.yield_keyword()
-            keywords = True
-            vec_index = 0
+    
             tf = 0
             doc_vector = zeros(self.vec_length)
             #print self.vec_length
             #print type(doc_vector)
-            while keywords:
-                try:
-                    kw = kw_generator.next()
-                    #print kw
-                except StopIteration:
-                    keywords = False
+            for kw in keywords:
                 #print kw        
-                if kw in doc_terms:
+                if kw in doc_terms.keys():
                     tf = doc_terms[kw]
-                    term_weight = self.calculate_term_weight(tf, doc_freq[kw], self.vec_length)
-                    doc_vector[vec_index] = term_weight
-                    vec_index += 1
+                    term_weight = mathutils.calculate_term_weight(tf, doc_freq[kw], self.vec_length)
+                    doc_vector[keywords[kw]] = term_weight
                     #print tf,term_weight,vec_index
  
-            doc_vector = self.normalise_vector(doc_vector)
+            doc_vector = mathutils.normalise_vector(doc_vector)
             print doc_vector
             dv[key] = doc_vector
             
 i = Indexer('database1')        
-i.calculate_document_frequency()
+#i.calculate_document_frequency()
 i.set_doc_vector()    
