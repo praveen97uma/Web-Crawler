@@ -67,7 +67,7 @@ class Indexer(object):
             db = shelve(self.db, 'w')
             for document in db.itervalues():
                 yield document
-            #yield db.itervalues().next()
+                
     def yield_keyword(self):
             temp_file = shelve('temp/terms_integerid','w')
             for value in temp_file['id2term'].itervalues():
@@ -97,11 +97,7 @@ class Indexer(object):
             doc_freq[kw] = count
             print kw,count
         doc_freq.close()
-    
-    
-    
-    
-        
+     
     def set_doc_vector(self):
         """
         Iterates through the documents and sets their document vectors 
@@ -124,25 +120,20 @@ class Indexer(object):
              """
             
             key = document.key
-            #print key
             doc_terms = document.unique_terms_freq
     
             tf = 0
             doc_vector = zeros(self.vec_length)
-            #print self.vec_length
-            #print type(doc_vector)
-            for kw in keywords:
-                #print kw        
+            for kw in keywords:      
                 if kw in doc_terms.keys():
                     tf = doc_terms[kw]
                     term_weight = mathutils.calculate_term_weight(tf, doc_freq[kw], self.vec_length)
                     doc_vector[keywords[kw]] = term_weight
-                    #print tf,term_weight,vec_index
  
             doc_vector = mathutils.normalise_vector(doc_vector)
             print doc_vector
             dv[key] = doc_vector
             
 i = Indexer('database1')        
-#i.calculate_document_frequency()
+i.calculate_document_frequency()
 i.set_doc_vector()    
