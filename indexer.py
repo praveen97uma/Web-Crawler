@@ -104,21 +104,13 @@ class Indexer(object):
         """
         doc_generator = self.yield_documents()
         documents = True
-        doc_freq = shelve('doc_frequencies','w')
-        shelve('documentVectors','c')
-        keyword_database = shelve('temp/terms_to_integer','r')
+        doc_freq = shelve('doc_frequencies', 'w')
+        shelve('documentVectors', 'c')
+        keyword_database = shelve('temp/terms_to_integer', 'r')
         keywords = keyword_database['term2id']
-        dv = shelve('documentVectors','w')
+        dv = shelve('documentVectors', 'w')
         db = shelve(self.db, 'w')
-        for document in db.itervalues():
-            """while documents:
-                try:
-                    document = doc_generator.next()
-                    
-                except StopIteration:
-                    flag = False
-             """
-            
+        for document in db.itervalues():            
             key = document.key
             doc_terms = document.unique_terms_freq
     
