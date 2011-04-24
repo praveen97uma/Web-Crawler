@@ -51,7 +51,7 @@ class TokenizeDocuments(object):
         
         """
           
-    def get_all_terms(self, pod = 1):
+    def get_all_terms(self, pod = 0.6):
         """
         Iterate through the documents and retrieve the list of all the terms in
         the corpus of text. pod is the percentage of documents that we want to 
@@ -113,10 +113,14 @@ class TokenizeDocuments(object):
         id2term stands for mapping of integer to a term.
         term2id stands for term mapped to an integer.
         """
-        terms_to_int = dict(enumerate(list_of_terms))
+        int_to_terms = dict(enumerate(list_of_terms))
+        terms_to_int = dict([(int_to_terms[key],key) for key in int_to_terms])
         shelve('temp/terms_integerid','c')
+        shelve('temp/terms_to_integer','c')
+        temp_file1 = shelve('temp/terms_to_integer','w')
         temp_file = shelve('temp/terms_integerid','w')
-        temp_file['id2term'] = terms_to_int
+        temp_file['id2term'] = int_to_terms
+        temp_file1['term2id'] = terms_to_int
         temp_file.close()    
         return terms_to_int
          
