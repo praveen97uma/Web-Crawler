@@ -95,10 +95,10 @@ class TokenizeDocuments(object):
         """
         int_to_terms = dict(enumerate(list_of_terms))
         terms_to_int = dict([(int_to_terms[key],key) for key in int_to_terms])
-        shelve('temp/terms_integerid','c')
-        shelve('temp/terms_to_integer','c')
-        temp_file1 = shelve('temp/terms_to_integer','w')
-        temp_file = shelve('temp/terms_integerid','w')
+        shelve('temp/terms_integerid', 'c')
+        shelve('temp/terms_to_integer', 'c')
+        temp_file1 = shelve('temp/terms_to_integer', 'w')
+        temp_file = shelve('temp/terms_integerid', 'w')
         temp_file['id2term'] = int_to_terms
         temp_file1['term2id'] = terms_to_int
         temp_file.close()    
