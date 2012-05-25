@@ -9,4 +9,4 @@ Enter 'www.iitr.ac.in' and the crawler starts crawling url which are in the same
 
 The crawler also maintains log of all the discarded, crawled and already visited links in log.txt.
 
-The crawler still needs lot of improvement to be done.
+*The crawler still needs lot of improvement to be done.*
